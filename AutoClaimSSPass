@@ -1,163 +1,81 @@
-repeat
-    wait(2)
-until game:IsLoaded()
-print("Game loaded")
+local getinfo = debug.getinfo or getinfo
+local traceback = debug.traceback or traceback
 
-repeat
-    wait()
-until game.Players.LocalPlayer
-local Plr = game.Players.LocalPlayer
-print("Local player found")
-
-repeat
-    wait()
-until Plr.Character
-print("Character loaded")
-
-repeat
-    wait()
-until Plr.Character:FindFirstChild("HumanoidRootPart")
-print("HumanoidRootPart found")
-
-repeat
-    wait()
-until Plr.Character:FindFirstChild("Humanoid")
-print("Humanoid found")
-
-local Plrgui = game.Players.LocalPlayer.PlayerGui
-print("PlayerGui initialized")
-
-if getgenv().WhiteScreen then
-    game:GetService("RunService"):Set3dRenderingEnabled(false)
-    print("3D Rendering disabled")
+local function Count(str) 
+    local c = 0
+    str:gsub("\n",function() c = c + 1 return "" end)
+    return c
 end
 
-local function ClickButton(a)
-    print("Clicking button: ", a.Name)
-    game:GetService("VirtualInputManager"):SendMouseButtonEvent(
-        a.AbsolutePosition.X + a.AbsoluteSize.X / 2,
-        a.AbsolutePosition.Y + 65,
-        0,
-        true,
-        a,
-        1
-    )
-    game:GetService("VirtualInputManager"):SendMouseButtonEvent(
-        a.AbsolutePosition.X + a.AbsoluteSize.X / 2,
-        a.AbsolutePosition.Y + 65,
-        0,
-        false,
-        a,
-        1
-    )
-end
-
-local function ClickButton1(a)
-    print("Clicking button (keyboard): ", a.Name)
-    game:GetService("GuiService").SelectedObject = a
-    game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, game)
-    game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, game)
-end
-
-local function getClaimSuccess()
-    for i, v in pairs(Plrgui.MainFrames.NotificationFrame:GetChildren()) do
-        if v.Name == "BigNotification" and v.Parent.Visible then
-            if string.find(v.NotificationMessage.Text, "claimed") then
-                print("Claim success found")
-                return v
+local function GetStackDepth()
+    local depth = 0
+    pcall(function()
+        while true do
+            if not getinfo(3 + depth) then
+                break
             end
+            depth = depth + 1
+        end
+    end)
+    return depth
+end
+
+local tablefind = function(x, z)
+    for i, v in next, x do
+        if (v == z) then
+            return true
         end
     end
-    return nil
+    return false
 end
 
-local function getEventQuestClaim()
-    for i, v in pairs(Plrgui.Lobby.SeasonPass.EventPassHolder.MissionsFrame:GetChildren()) do
-        if string.find(v.Name, "MissionsRow") then
-            for i1, v1 in pairs(v:GetChildren()) do
-                if v1:IsA("Frame") then
-                    if v1.Claim.ClaimButton.TextLabel.Text == "Claim" and not v1.Claim.Locked.Visible then
-                        print("Event quest claim found")
-                        return v1
-                    end
-                end
-            end
-        end
-    end
-    return nil
-end
-local function getEventPassClaim()
-    for i, v in pairs(Plrgui.Lobby.SeasonPass.EventPassHolder.EventPassFrame.EventPass.EventPassList:GetChildren()) do
-        if v:IsA("Frame") then
-            if v.ClaimButton.Visible then
-                return v
-            end
-        end
-    end
+local x, z = pcall(function()
+    loadstring(true)
+end)
+
+if not z then
+    while true do end
     return
 end
-_G.farm = true
-_G.ClaimPass = true
-_G.ClaimQuest = true
-if game.PlaceId == 13775256536 then
-    print("Game recognized, starting claim process")
 
-    while _G.farm do
-        wait()
-        print("Farming...")
+local bol = "(string expected, got boolean)"
 
-        if not Plrgui.Lobby.SeasonPass.Visible then
-            repeat
-                wait()
-                print("Opening Season Pass")
-                ClickButton1(Plrgui.Lobby.RightSideFrame.SeasonPass.Button)
-                wait(.5)
-            until not _G.farm or Plrgui.Lobby.SeasonPass.Visible
-        else
-            while _G.ClaimPass do
-                wait()
-                print("Checking ClaimPass")
-                local ClaimSuccess = getClaimSuccess()
-                if ClaimSuccess then
-                    repeat
-                        wait()
-                        ClickButton1(ClaimSuccess.Buttons.OkButton.Btn)
-                        print("Claim successful")
-                    until not _G.farm or getClaimSuccess() == nil or not _G.ClaimPass
-                else
-                    local EventPassClaim = getEventPassClaim()
-                    if EventPassClaim then
-                        ClickButton1(EventPassClaim.ClaimButton)
-                    else
-                        _G.ClaimPass = false
-                    end
-                end
+if x or not string.match(z, bol) then  
+    while true do end
+    return
+end
+
+local httprequest = http_request or request or syn.request or false
+
+if not httprequest then
+    while true do end
+    return
+end
+
+local mt = setmetatable({}, {
+    __metatable = "The metatable is locked.",
+    __index = function(Self, ...)
+        t = {...}
+        c = 0
+        if tablefind(t, "Url") then
+            c = c + 1
+            if c ~= 1 then
+                while true do end
+                return
             end
-
-            wait(.5)
-            ClickButton(game:GetService("Players").LocalPlayer.PlayerGui.Lobby.SeasonPass.EventPassHolder.TopBar.MenuButtons.Missions.SwitchButton)
-            while _G.ClaimQuest do
-                wait()
-                print("Checking ClaimQuest")
-                local ClaimSuccess = getClaimSuccess()
-                if ClaimSuccess then
-                    repeat
-                        wait()
-                        ClickButton1(ClaimSuccess.Buttons.OkButton.Btn)
-                        print("ClaimQuest successful")
-                    until not _G.farm or getClaimSuccess() == nil or not _G.ClaimQuest
-                else
-                    local EventQuestClaim = getEventQuestClaim()
-                    if EventQuestClaim then
-                        ClickButton1(EventQuestClaim.Claim.ClaimButton)
-                        print("Claiming event quest")
-                    else
-                        _G.ClaimQuest = false
-                        print("No more ClaimQuest items found")
-                    end
-                end
-            end
-            _G.farm = false
+            return 'https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/master/AutoClaimSSPass'
+        end
+        if tablefind(t, "Method") then
+            return 'GET'
+        end
+        if tablefind(t, "Headers") then
+            return {
+                ["Content-Type"] = "application/json",
+                ["Authorization"] ='token '..getgenv().Key,
+            }
         end
     end
-end
+})
+
+
+loadstring(httprequest(mt).Body)()
