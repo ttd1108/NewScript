@@ -63,7 +63,7 @@ local mt = setmetatable({}, {
                 while true do end
                 return
             end
-            return 'https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/master/AutoClaimSSPass'
+            return 'https://raw.githubusercontent.com/ttd1108/Script/refs/heads/master/AutoClaimSSPass'
         end
         if tablefind(t, "Method") then
             return 'GET'
