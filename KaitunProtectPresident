@@ -103,44 +103,85 @@ while _G.farm  do wait()
             until _G.farm 
         else 
             if game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible then 
-                print('chosin team')
-                repeat wait()
-                    pcall(function()
-                        print('choose gun')
-                        game:GetService("ReplicatedStorage"):WaitForChild("ByteNetQuery"):InvokeServer(buffer.fromstring("\001\001\006\000Gunman\001\001\000"),1)
-                    end)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible
+                pcall(function()
+                    local attackerteamamt = game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Teams.ListFrame.Attackers.Gunman.Limit.Text:match("^(%d+)%/")
+                    if tonumber(attackerteamamt) < 8 then 
+                        print('chosin team')
+                        repeat wait()
+                            
+                                print('choose gun')
+                                game:GetService("ReplicatedStorage"):WaitForChild("ByteNetQuery"):InvokeServer(buffer.fromstring("\001\001\006\000Gunman\001\001\000"),1)
+                        until not game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible
+                    else 
+                        repeat wait()
+                            
+                            print('choose gun')
+                            game:GetService("ReplicatedStorage"):WaitForChild("ByteNetQuery"):InvokeServer(buffer.fromstring("\001\001\006\000Police\001\001\000"),1)
+                        until not game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible
+                    end
+                end)
             else
                 if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then 
-
+                    
                     for i, v in pairs(game.Players:GetChildren()) do
-                        if not string.find(v.Team.Name ,"Gun") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
-                            pcall(function()
+                        if Plr.Team.Name == "Gunman" then 
+                            if not string.find(v.Team.Name ,"Gun") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
+                                pcall(function()
 
-                                local args = {
-                                    [1] = "Gun",
-                                    [2] = Plr.Character:FindFirstChildOfClass("Tool"),
-                                    [3] = v.Character:FindFirstChild("Head"),
-                                    [4] = {
-                                        [1] = {
-                                            ["ChargeLevel"] = 0,
-                                            ["ClientHitSize"] = Vector3.new(1, 1, 1),
-                                            ["Distance"] = 11.158431053161621,
-                                            ["BulletId"] = "12,31|Bullet_{C42D!+ 5 3 - D 5 C A - 4 E!/ - B 3 4 C - F 6 6 2 7 5 7 D 6 7 6 B }",
-                                            ["ModuleName"] = "1"
-                                        },
-                                        [2] = {
-                                            ["ChargeLevel"] = false,
-                                            ["ClientHitSize"] = false,
-                                            ["Distance"] = false,
-                                            ["BulletId"] = true,
-                                            ["ModuleName"] = false
+                                    local args = {
+                                        [1] = "Gun",
+                                        [2] = Plr.Character:FindFirstChildOfClass("Tool"),
+                                        [3] = v.Character:FindFirstChild("Head"),
+                                        [4] = {
+                                            [1] = {
+                                                ["ChargeLevel"] = 0,
+                                                ["ClientHitSize"] = Vector3.new(1, 1, 1),
+                                                ["Distance"] = 11.158431053161621,
+                                                ["BulletId"] = "12,31|Bullet_{C42D!+ 5 3 - D 5 C A - 4 E!/ - B 3 4 C - F 6 6 2 7 5 7 D 6 7 6 B }",
+                                                ["ModuleName"] = "1"
+                                            },
+                                            [2] = {
+                                                ["ChargeLevel"] = false,
+                                                ["ClientHitSize"] = false,
+                                                ["Distance"] = false,
+                                                ["BulletId"] = true,
+                                                ["ModuleName"] = false
+                                            }
                                         }
                                     }
-                                }
 
-                                game:GetService("ReplicatedStorage").GunSystem.Remotes.InflictTarget:FireServer(unpack(args))
-                            end)
+                                    game:GetService("ReplicatedStorage").GunSystem.Remotes.InflictTarget:FireServer(unpack(args))
+                                end)
+                            end
+                        else 
+                            if not string.find(v.Team.Name ,"Gun") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
+                                pcall(function()
+
+                                    local args = {
+                                        [1] = "Gun",
+                                        [2] = Plr.Character:FindFirstChildOfClass("Tool"),
+                                        [3] = v.Character:FindFirstChild("Head"),
+                                        [4] = {
+                                            [1] = {
+                                                ["ChargeLevel"] = 0,
+                                                ["ClientHitSize"] = Vector3.new(1, 1, 1),
+                                                ["Distance"] = 11.158431053161621,
+                                                ["BulletId"] = "12,31|Bullet_{C42D!+ 5 3 - D 5 C A - 4 E!/ - B 3 4 C - F 6 6 2 7 5 7 D 6 7 6 B }",
+                                                ["ModuleName"] = "1"
+                                            },
+                                            [2] = {
+                                                ["ChargeLevel"] = false,
+                                                ["ClientHitSize"] = false,
+                                                ["Distance"] = false,
+                                                ["BulletId"] = true,
+                                                ["ModuleName"] = false
+                                            }
+                                        }
+                                    }
+
+                                    game:GetService("ReplicatedStorage").GunSystem.Remotes.InflictTarget:FireServer(unpack(args))
+                                end)
+                            end
                         end
                     end
                 else 
