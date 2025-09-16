@@ -1,0 +1,157 @@
+_G.farm = true 
+repeat wait() until game:IsLoaded()
+repeat wait() until game.Players.LocalPlayer
+local Plr = game.Players.LocalPlayer
+repeat wait() until Plr.Character
+repeat wait() until Plr.Character:FindFirstChild("HumanoidRootPart")
+repeat wait() until Plr.Character:FindFirstChild("Humanoid") 
+local Plrgui =game.Players.LocalPlayer.PlayerGui
+local vim = game:GetService("VirtualInputManager")
+local IgnoreServerId = {}
+local function HopServer(High, forcePlaceId)
+
+    if getgenv().Hopping then return end
+    getgenv().Hopping = true
+
+    print('Hopping server (' .. (High and "High" or "Low") .. ' player count)')
+
+    local HopPlaceId = forcePlaceId or game.PlaceId 
+    local ListServers = function(cursor)
+        local _servers = "https://games.roblox.com/v1/games/" .. HopPlaceId .. "/servers/Public"
+        _servers = _servers .. "?sortOrder=" .. (High and "Desc" or "Asc")
+        _servers = _servers .. "&limit=100&excludeFullGames=true"
+        local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+        return game:GetService("HttpService"):JSONDecode(Raw)
+    end
+    local nextime, Next = 0
+    getgenv().HopableServers = {}
+    spawn(function()
+        while true do
+            if not getgenv().Hopping then break end
+            local s, e = pcall(function()
+                local ServerList = ListServers(Next, Max)
+                local ServerData = ServerList.data and ServerList.data[1]
+                pcall(function()
+                    if not ServerData and ServerList.errors then
+                        warn(ServerList.errors[1].message)
+                        wait(1)
+                    end
+                end)
+                if ServerData and not IgnoreServerId[ServerData.id] then--and tonumber(ServerData.ping) < 1000 then
+                    local playingPlayers, maxPlayers = tonumber(ServerData.playing), tonumber(ServerData.maxPlayers)
+                    if High
+                    and playingPlayers < maxPlayers
+                    and playingPlayers >= maxPlayers - math.floor((maxPlayers / 100) * 20)
+                    or not High
+                    and playingPlayers < maxPlayers then
+                        getgenv().HopableServers[ServerData.id] = true
+                    end
+                end
+    
+                Next = ServerList.nextPageCursor
+                nextime = nextime + 1
+            end)
+            if e then print(e) end
+        end
+    end)
+    while wait() do
+        if not getgenv().Hopping then break end
+        local s, e = pcall(function()
+            for i, v in getgenv().HopableServers do
+                print("Teleporting to " .. i)
+                game:GetService("TeleportService"):TeleportToPlaceInstance(HopPlaceId, i, game.Players.LocalPlayer)
+                IgnoreServerId[i] = true
+                getgenv().HopableServers[i] = nil
+                task.wait(2)
+            end
+        end)
+        if e then print(e) end
+    end
+end
+local function ClickButton1(a)
+   game:GetService("GuiService").SelectedObject = a
+   game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, game)
+   game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, game) 
+end
+local function GetEquipWeapon()
+    for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do 
+        if v:IsA("Tool") and v.ToolTip == "Pistol" then 
+            return v 
+        end 
+    end 
+    return 
+end 
+while _G.farm  do wait()
+    if Plrgui:FindFirstChild("PlayUI") then 
+        
+        repeat wait()
+            
+            ClickButton1(game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PlayUI").Main.PlayButton)
+            wait(.5)
+        until not _G.farm or not Plrgui:FindFirstChild("PlayUI")
+        
+    else 
+        if game:GetService("Players").LocalPlayer.PlayerGui.GameEndUI.Main.Visible then 
+            repeat wait()
+                _G.farm = false 
+                queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/main/KaitunProtectPresident'))()")
+                while wait() do
+                    HopServer("High",game.PlaceId)
+                    wait(10)
+                end
+                
+            until _G.farm 
+        else 
+            if game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible then 
+                print('chosin team')
+                repeat wait()
+                    pcall(function()
+                        print('choose gun')
+                        game:GetService("ReplicatedStorage"):WaitForChild("ByteNetQuery"):InvokeServer(buffer.fromstring("\001\001\006\000Gunman\001\001\000"),1)
+                    end)
+                until not game:GetService("Players").LocalPlayer.PlayerGui.ChooseTeam.Main.Visible
+            else
+                if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then 
+
+                    for i, v in pairs(game.Players:GetChildren()) do
+                        if not string.find(v.Team.Name ,"Gun") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
+                            pcall(function()
+
+                                local args = {
+                                    [1] = "Gun",
+                                    [2] = Plr.Character:FindFirstChildOfClass("Tool"),
+                                    [3] = v.Character:FindFirstChild("Head"),
+                                    [4] = {
+                                        [1] = {
+                                            ["ChargeLevel"] = 0,
+                                            ["ClientHitSize"] = Vector3.new(1, 1, 1),
+                                            ["Distance"] = 11.158431053161621,
+                                            ["BulletId"] = "12,31|Bullet_{C42D!+ 5 3 - D 5 C A - 4 E!/ - B 3 4 C - F 6 6 2 7 5 7 D 6 7 6 B }",
+                                            ["ModuleName"] = "1"
+                                        },
+                                        [2] = {
+                                            ["ChargeLevel"] = false,
+                                            ["ClientHitSize"] = false,
+                                            ["Distance"] = false,
+                                            ["BulletId"] = true,
+                                            ["ModuleName"] = false
+                                        }
+                                    }
+                                }
+
+                                game:GetService("ReplicatedStorage").GunSystem.Remotes.InflictTarget:FireServer(unpack(args))
+                            end)
+                        end
+                    end
+                else 
+                    local Weap = GetEquipWeapon()
+                    if Weap then 
+                        repeat wait() 
+                            game.Players.LocalPlayer.Character.Humanoid:EquipTool(Weap)
+                        until not _G.farm or game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") or game:GetService("Players").LocalPlayer.PlayerGui.GameEndUI.Main.Visible
+                    end 
+                end 
+            end 
+        end
+    end
+end
