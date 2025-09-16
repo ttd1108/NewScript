@@ -196,7 +196,7 @@
     end)
     spawn(function()
         while wait() do 
-            if #game.Players:GetChildren() < 6 then 
+            if #game.Players:GetChildren() < 10 then 
                 queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/main/KaitunProtectPresident'))()")
                 while wait() do
                     HopServer("High",game.PlaceId)
