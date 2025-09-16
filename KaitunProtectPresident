@@ -195,13 +195,15 @@
         end
     end)
     spawn(function()
-        if #game.Players:GetChildren() < 6 then 
-            queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/main/KaitunProtectPresident'))()")
-            while wait() do
-                HopServer("High",game.PlaceId)
-                wait(5)
-            end
-        end 
+        while wait() do 
+            if #game.Players:GetChildren() < 6 then 
+                queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/main/KaitunProtectPresident'))()")
+                while wait() do
+                    HopServer("High",game.PlaceId)
+                    wait(5)
+                end
+            end 
+        end
     end)
     spawn(function()
         queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/ttd1108/NewScript/refs/heads/main/KaitunProtectPresident'))()")
