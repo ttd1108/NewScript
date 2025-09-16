@@ -122,7 +122,7 @@
                             
                             for i, v in pairs(game.Players:GetChildren()) do
                                 if Plr.Team.Name == "Gunman" then 
-                                    if not string.find(v.Team.Name ,"Gun") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
+                                    if not string.find(v.Team.Name ,"Gun") and not string.find(v.Team.Name ,"President") and v.Character and v.Character:FindFirstChild("Head") and v.Character.Head  and v.Character.Humanoid.Health >0   then
                                         pcall(function()
 
                                             local args = {
